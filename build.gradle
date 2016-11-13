@@ -1,0 +1,49 @@
+group 'org.krisbox.multirotor'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.8
+def mysqlGroup        = 'mysql'
+def mysqlName         = 'mysql-connector-java'
+def mysqlVersion      = '6.0.5'
+
+def gsonGroup         = 'com.google.code.gson'
+def gsonName          = 'gson'
+def gsonVersion       = '2.8.0'
+
+def log4jGroup        = 'log4j'
+def log4jName         = 'log4j'
+def log4jVersion      = '1.2.17'
+
+def commonsCliGroup   = 'commons-cli'
+def commonsCliName    = 'commons-cli'
+def commonsCliVersion = '1.3.1'
+
+def jodaTimeGroup = 'joda-time'
+def jodaTimeName  = 'joda-time'
+def jodaTimeVersion = '2.9.5'
+repositories {
+    mavenCentral()
+}
+
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'Telemetry from mat logs to mysql',
+                   'Implementation-Version': version,
+                   'Main-Class': 'org.krisbox.multirotor.TelemetryLogs'
+    }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+    compile fileTree(dir: 'lib', include: '*.jar')
+    compile group: mysqlGroup,      name: mysqlName,      version: mysqlVersion
+    compile group: gsonGroup,       name: gsonName,       version: gsonVersion
+    compile group: log4jGroup,      name: log4jName,      version: log4jVersion
+    compile group: commonsCliGroup, name: commonsCliName, version: commonsCliVersion
+    compile group: jodaTimeGroup,   name: jodaTimeName,   version: jodaTimeVersion
+}
